@@ -102,3 +102,16 @@ RSpec.configure do |config|
   # as the one that triggered the failure.
   Kernel.srand config.seed
 end
+
+
+RSpec.shared_examples 'framework integration' do
+  around(:each) { |ex| MemFs.activate(&ex) }
+
+  context 'with database config' do
+    subject {  application.config_for(:database) }
+    before { MemFs.touch(config.join('database.yml')) }
+
+    after { subject }
+    it { expect(ConfigFor).to receive(:load_config).with(config.to_s,:database,'production') }
+  end
+end
