@@ -6,3 +6,14 @@ begin
   task default: :spec
 rescue LoadError
 end
+
+
+begin
+  require 'config_for'
+  require 'pry'
+
+  task :console do
+    Pry.toplevel_binding.pry
+  end
+rescue LoadError
+end

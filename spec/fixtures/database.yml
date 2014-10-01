@@ -1,0 +1,6 @@
+production:
+  host: localhost
+  port: 3306
+
+development:
+  host: localhost
