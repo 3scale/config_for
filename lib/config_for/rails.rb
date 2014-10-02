@@ -14,4 +14,6 @@ module ConfigFor
   end
 end
 
-::Rails::Application.include(ConfigFor::Rails)
+::Rails::Application.class_eval do
+  include ConfigFor::Rails
+end
