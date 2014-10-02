@@ -74,4 +74,29 @@ RSpec.describe ConfigFor::Capistrano::Task do
       expect(rake_task('other')).to be
     end
   end
+
+  context 'task in namespace' do
+    let!(:database_task) do
+      Rake.application.in_namespace('namespace') do
+        described_class.new(:database)
+      end
+    end
+
+    let(:prerequisites) { subject.prerequisites }
+    subject { rake_task(self.class.description) }
+
+    context 'namespace:database:upload' do
+      it { is_expected.to be }
+      it { expect(prerequisites).to eq(['config/database.yml'])}
+    end
+
+    context 'namespace:database' do
+      it { is_expected.to be }
+    end
+
+    context 'config/database.yml' do
+      it { is_expected.to be_a(ConfigFor::Capistrano::UploadTask) }
+    end
+
+  end
 end

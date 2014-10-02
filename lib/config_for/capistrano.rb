@@ -110,6 +110,45 @@ module ConfigFor
 
         before 'deploy:check:linked_files', @name
       end
+
+
+      private
+
+      # This reimplements Capistrano::DSL::TaskEnhancements#remote_file
+      # but uses UploadTask instead of Rake::Task
+
+      # TODO: can be removed when https://github.com/capistrano/capistrano/pull/1144
+      # is merged and released
+
+      def remote_file(task)
+        target_roles = task.delete(:roles)
+
+        UploadTask.define_task(task) do |t|
+          prerequisite_file = t.prerequisites.first
+          file = shared_path.join(t.name)
+
+          on roles(target_roles) do
+            unless test "[ -f #{file} ]"
+              info "Uploading #{prerequisite_file} to #{file}"
+              upload! File.open(prerequisite_file), file
+            end
+          end
+
+        end
+      end
+    end
+
+
+    private
+
+    # Inheriting from Rake::FileCreationTask because it does not scope
+    # task by namespace. Capistrano uses default Rake::Task which inside namespace produces:
+    # namespace:path/file.ext instead of just path/file.ext
+
+    class UploadTask < Rake::FileCreationTask
+      def needed?
+        true
+      end
     end
   end
 end
