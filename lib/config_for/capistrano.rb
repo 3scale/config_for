@@ -3,22 +3,39 @@ require 'pathname'
 require 'tempfile'
 require 'capistrano/dsl'
 require 'active_support/core_ext/hash/keys'
+require 'yaml'
 
 module ConfigFor
   module Capistrano
 
     # inspired by https://github.com/rspec/rspec-core/blob/6b7f55e4fb36226cf830983aab8da8308f641708/lib/rspec/core/rake_task.rb
 
+    # Rake Task generator for generating and uploading config files through Capistrano.
+    # @example generating task for database.yml
+    #   ConfigFor::Capistrano::Task.new(:database)
+    # @example changing the folder
+    #   ConfigFor::Capistrano::Task.new(:database) { |task| task.folder = 'configuration' }
     class Task < ::Rake::TaskLib
       include ::Capistrano::DSL
 
-      attr_reader :name
 
+      # @!attribute name
+      #   @return [String] the name of the task and subtasks namespace
+      attr_accessor :name
+
+      # @!attribute folder
+      #   @return [String] folder to upload the generated config
       attr_accessor :folder
 
-      attr_reader :tempfile
+      # @!attribute tempfile
+      #   @return [Tempfile] temporary file for generating the config before upload
+      attr_accessor :tempfile
 
-      def initialize(name, *args, &task_block)
+      # Generates new tasks with for uploading #name
+      # @param [String, Symbol] name name of this tasks and subtasks
+      # @param &block gets evaluated before defining the tasks
+      # @yieldparam [Task] task the task itself so you can modify it before it gets defined
+      def initialize(name, &block)
         @name = name
         @folder = 'config'
         @file = "#{name}.yml"
@@ -26,19 +43,27 @@ module ConfigFor
         @tempfile = ::Tempfile.new(@file)
         @variable = "#{name}_yml".to_sym
 
+        yield(self) if block_given?
+
         desc "Generate #{name} uploader" unless ::Rake.application.last_comment
-        define(args, &task_block)
+        define
       end
 
 
+      # Path where will be the file uploaded
+      # Is a join of #folder and #file
       def path
         ::File.join(@folder, @file)
       end
 
+      # Invokes the task to do the upload
       def run_task
         invoke("#{name}:upload")
       end
 
+      # Generated YAML content
+      # Gets the configuration from #variable, deep stringifies keys and returns YAML
+      # @return [String] serialized YAML
       def yaml
         config = fetch(@variable, {})
         config.deep_stringify_keys.to_yaml
@@ -46,7 +71,7 @@ module ConfigFor
 
       private
 
-      def define(args, &task_block)
+      def define
         namespace name do
           desc "Upload #{path} to remote servers"
           task upload: path
@@ -77,16 +102,11 @@ module ConfigFor
           end
         end
 
-        desc 'upload remote file'
         remote_file path => @tempfile.path, roles: @roles
-        desc 'generate local file'
         file @tempfile.path => "#{name}:generate"
 
         desc "Generate #{path}"
-        task(name, *args) do |_, task_args|
-          task_block.call(*[self, task_args].slice(0, task_block.arity)) if task_block
-          run_task
-        end
+        task(name, &method(:run_task))
 
         before 'deploy:check:linked_files', @name
       end

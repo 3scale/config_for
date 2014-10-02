@@ -60,4 +60,18 @@ RSpec.describe ConfigFor::Capistrano::Task do
       it { expect(prerequisites).to eq(%w[remove upload]) }
     end
   end
+
+  context 'task' do
+    it 'accepts block to change folder' do
+      task = described_class.new(:test) { |task| task.folder = 'other' }
+      expect(task.folder).to eq('other')
+      expect(rake_task('other/test.yml')).to be
+    end
+
+    it 'accepts block to change name' do
+      task = described_class.new(:test) { |task| task.name = 'other' }
+      expect(task.name).to eq('other')
+      expect(rake_task('other')).to be
+    end
+  end
 end

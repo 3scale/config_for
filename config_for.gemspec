@@ -27,6 +27,7 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency 'rspec', '~> 3.1'
   spec.add_development_dependency 'memfs'
+  spec.add_development_dependency 'yard'
 
   # Sorry, but it has HashWithIndifferentAccess and symbolize_keys
   spec.add_dependency 'activesupport', '>= 3.0'
