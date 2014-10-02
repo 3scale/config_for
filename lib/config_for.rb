@@ -32,11 +32,11 @@ module ConfigFor
   def self.load_config(path, name, env)
     yaml = File.join(path, "#{name}.yml")
 
-    if File.exist?(yaml)
+    if File.readable?(yaml)
       config = parse_yaml(yaml)[env]
       ActiveSupport::HashWithIndifferentAccess.new(config)
     else
-      raise "Could not load configuration. No such file - #{yaml}"
+      raise "Could not load configuration. Can't read #{yaml}"
     end
   end
 

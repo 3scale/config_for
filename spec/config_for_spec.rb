@@ -17,7 +17,7 @@ RSpec.describe ConfigFor do
     it do
       expect{ subject }
           .to raise_error(RuntimeError,
-                          'Could not load configuration. No such file - spec/fixtures/unknown.yml')
+                          'Could not load configuration. Can\'t read spec/fixtures/unknown.yml')
     end
   end
 end
