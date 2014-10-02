@@ -7,6 +7,10 @@ begin
 rescue LoadError
 end
 
+begin
+  require 'appraisal'
+rescue LoadError
+end
 
 begin
   require 'config_for'

@@ -66,7 +66,14 @@ module ConfigFor
       # @return [String] serialized YAML
       def yaml
         config = fetch(@variable, {})
-        config.deep_stringify_keys.to_yaml
+        stringified = if config.respond_to?(:deep_stringify_keys)
+                        config.deep_stringify_keys
+                      else
+                        # TODO: remove when dropping rails 3 support
+                        # two level stringify for rails 3 compatability
+                        config.stringify_keys.each_value(&:stringify_keys!)
+                      end
+        stringified.to_yaml
       end
 
       private
