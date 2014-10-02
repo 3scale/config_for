@@ -22,6 +22,13 @@ Or install it yourself as:
 
     $ gem install config_for
 
+## Compatibility
+
+Tested against Ruby 1.9.3, 2.0.0, 2.1.2, 2.1.3.
+Also against 3 versions of rails: 3.2, 4.0 and 4.1.
+
+Capistrano `>= 3.0` is required as well as Sinatra `>= 1.4`.
+
 ## Usage
 
 ConfigFor will automatically load correct integrations for Rails/Sinatra/Capistrano
