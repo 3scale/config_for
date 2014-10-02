@@ -63,15 +63,22 @@ RSpec.describe ConfigFor::Capistrano::Task do
 
   context 'task' do
     it 'accepts block to change folder' do
-      task = described_class.new(:test) { |task| task.folder = 'other' }
+      task = described_class.new(:test) { |t| t.folder = 'other' }
       expect(task.folder).to eq('other')
       expect(rake_task('other/test.yml')).to be
     end
 
     it 'accepts block to change name' do
-      task = described_class.new(:test) { |task| task.name = 'other' }
+      task = described_class.new(:test) { |t| t.name = 'other' }
       expect(task.name).to eq('other')
       expect(rake_task('other')).to be
+    end
+
+    it 'invokes upload' do
+      task = described_class.new(:test)
+      expect(rake_task('test:upload')).to receive(:invoke)
+
+      invoke(task.name)
     end
   end
 
@@ -97,6 +104,5 @@ RSpec.describe ConfigFor::Capistrano::Task do
     context 'config/database.yml' do
       it { is_expected.to be_a(ConfigFor::Capistrano::UploadTask) }
     end
-
   end
 end

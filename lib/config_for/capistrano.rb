@@ -16,9 +16,6 @@ module ConfigFor
     # @example changing the folder
     #   ConfigFor::Capistrano::Task.new(:database) { |task| task.folder = 'configuration' }
     class Task < ::Rake::TaskLib
-      include ::Capistrano::DSL
-
-
       # @!attribute name
       #   @return [String] the name of the task and subtasks namespace
       attr_accessor :name
@@ -49,7 +46,6 @@ module ConfigFor
         define
       end
 
-
       # Path where will be the file uploaded
       # Is a join of #folder and #file
       def path
@@ -57,7 +53,7 @@ module ConfigFor
       end
 
       # Invokes the task to do the upload
-      def run_task
+      def run_task(_task, _args)
         invoke("#{name}:upload")
       end
 
@@ -77,6 +73,8 @@ module ConfigFor
       end
 
       private
+
+      include ::Capistrano::DSL
 
       def define
         namespace name do
@@ -112,14 +110,11 @@ module ConfigFor
         remote_file path => @tempfile.path, roles: @roles
         file @tempfile.path => "#{name}:generate"
 
+        before 'deploy:check:linked_files', @name
+
         desc "Generate #{path}"
         task(name, &method(:run_task))
-
-        before 'deploy:check:linked_files', @name
       end
-
-
-      private
 
       # This reimplements Capistrano::DSL::TaskEnhancements#remote_file
       # but uses UploadTask instead of Rake::Task
