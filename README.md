@@ -1,4 +1,4 @@
-# ConfigFor
+# ConfigFor [![Build Status](https://travis-ci.org/3scale/config_for.svg?branch=master)](https://travis-ci.org/3scale/config_for)
 
 Framework for generating, uploading and loading config files in Ruby apps.
 
