@@ -107,6 +107,19 @@ So the last think you have to do is add `config/database.yml` to `linked_files` 
 set :linked_files, %w[ config/database.yml ]
 ```
 
+### PORO
+
+If you have your own framework. You need to create your own `config_for` method. But don't worry. It is easy:
+
+```ruby
+require 'config_for'
+module MyApp
+  def self.config_for(name)
+    ConfigFor.load_config(MyApp.root.join('config'), name, MyApp.env)
+  end
+end
+```
+
 ## Contributing
 
 1. Fork it ( https://github.com/3scale/config_for/fork )
