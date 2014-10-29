@@ -20,4 +20,12 @@ RSpec.describe ConfigFor do
                           'Could not load configuration. Can\'t read spec/fixtures/unknown.yml')
     end
   end
+
+  context 'with symbol as env' do
+    let(:env) { :production }
+
+    context 'database' do
+      it { is_expected.to_not be_empty }
+    end
+  end
 end
