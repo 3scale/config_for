@@ -3,7 +3,10 @@ require 'pathname'
 
 require 'yaml'
 require 'erb'
+
 require 'active_support/hash_with_indifferent_access'
+# HashWithIndifferentAccess needs this core extension to be loaded
+require 'active_support/core_ext/hash/indifferent_access'
 
 module ConfigFor
   if defined?(::Rails)
@@ -33,8 +36,8 @@ module ConfigFor
     yaml = File.join(path, "#{name}.yml")
 
     if File.readable?(yaml)
-      config = parse_yaml(yaml)[env]
-      ActiveSupport::HashWithIndifferentAccess.new(config)
+      config = parse_yaml(yaml)
+      ActiveSupport::HashWithIndifferentAccess.new(config).fetch(env)
     else
       raise "Could not load configuration. Can't read #{yaml}"
     end
