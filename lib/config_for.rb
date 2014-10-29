@@ -37,7 +37,7 @@ module ConfigFor
 
     if File.readable?(yaml)
       config = parse_yaml(yaml)
-      ActiveSupport::HashWithIndifferentAccess.new(config).fetch(env)
+      ActiveSupport::HashWithIndifferentAccess.new(config).fetch(env) { Hash.new }
     else
       raise "Could not load configuration. Can't read #{yaml}"
     end

@@ -28,4 +28,12 @@ RSpec.describe ConfigFor do
       it { is_expected.to_not be_empty }
     end
   end
+
+  context 'for unknown env' do
+    let(:env) { 'unknown' }
+
+    context 'database' do
+      it { is_expected.to be_empty }
+    end
+  end
 end
