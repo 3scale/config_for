@@ -1,4 +1,4 @@
-# ConfigFor [![Build Status](https://travis-ci.org/3scale/config_for.svg?branch=master)](https://travis-ci.org/3scale/config_for)
+# ConfigFor [![Build Status](https://travis-ci.org/3scale/config_for.svg?branch=master)](https://travis-ci.org/3scale/config_for) [![Code Climate](https://codeclimate.com/github/3scale/config_for/badges/gpa.svg)](https://codeclimate.com/github/3scale/config_for) [![Test Coverage](https://codeclimate.com/github/3scale/config_for/badges/coverage.svg)](https://codeclimate.com/github/3scale/config_for)
 
 Framework for generating, uploading and loading config files in Ruby apps.
 
