@@ -9,6 +9,7 @@ require 'active_support/hash_with_indifferent_access'
 require 'active_support/core_ext/hash/indifferent_access'
 
 module ConfigFor
+  # @api private
   class Config
     extend Forwardable
 
@@ -32,7 +33,7 @@ module ConfigFor
     def fetch(key, &block)
       config.fetch(key, &block)
     rescue KeyError
-      raise ConfigFor::MissingEnvironment, "#{@pathname} contains just #{environments}, not #{key}"
+      raise ConfigFor::MissingEnvironmentError, "#{@pathname} contains just #{environments}, not #{key}"
     end
 
     private
@@ -53,6 +54,8 @@ module ConfigFor
 
     def read
       @pathname.read
+    rescue => error
+      raise ConfigFor::ReadError, error.message
     end
 
     def parse
@@ -60,7 +63,7 @@ module ConfigFor
       erb = ::ERB.new(content).result
       ::YAML.load(erb, @pathname)
     rescue ::Psych::SyntaxError => e
-      fail ConfigFor::InvalidConfig, "YAML syntax error occurred while parsing #{content}. Error: #{e.message}"
+      fail ConfigFor::InvalidConfigError, "YAML syntax error occurred while parsing #{content}. Error: #{e.message}"
     end
   end
 end

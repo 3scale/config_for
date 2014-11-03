@@ -6,6 +6,14 @@ It offers integrations with Rails and Sinatra.
 
 For generating and uploading configs it uses Capistrano task.
 
+# How to use it?
+
+* Check [RDoc documentation](http://www.rubydoc.info/github/3scale/config_for/master/frames)
+* If you have Rails/Sinatra, just add the gem to Gemfile and use it (
+[Sinatra example](http://www.rubydoc.info/github/3scale/config_for/master/ConfigFor/Sinatra:config_for),
+[Rails example](http://www.rubydoc.info/github/3scale/config_for/master/ConfigFor/Rails:config_for))
+* Otherwise check [ConfigFor.load_config!](http://www.rubydoc.info/github/3scale/config_for/master/ConfigFor.load_config!)
+
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -115,7 +123,7 @@ If you have your own framework. You need to create your own `config_for` method.
 require 'config_for'
 module MyApp
   def self.config_for(name)
-    ConfigFor.load_config(MyApp.root.join('config'), name, MyApp.env)
+    ConfigFor.load_config!(MyApp.root.join('config'), name, MyApp.env)
   end
 end
 ```

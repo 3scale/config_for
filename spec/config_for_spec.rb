@@ -18,7 +18,7 @@ RSpec.describe ConfigFor do
     context 'unknown config', name: 'unknown' do
       it do
         expect{ subject }
-            .to raise_error(Errno::ENOENT, /^No such file or directory/)
+            .to raise_error(ConfigFor::ReadError, /^No such file or directory/)
       end
     end
   end
@@ -47,7 +47,7 @@ RSpec.describe ConfigFor do
     context 'unknown env' do
       let(:env) { 'unknown' }
       it { expect{subject}
-               .to raise_error(ConfigFor::MissingEnvironment, /database\.yml contains just \["production", "development"\], not unknown/) }
+               .to raise_error(ConfigFor::MissingEnvironmentError, /database\.yml contains just \["production", "development"\], not unknown/) }
     end
   end
 end
