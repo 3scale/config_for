@@ -2,6 +2,9 @@
 All notable changes to this project will be documented in this file.
 
 ## master - unreleased
+### Changed
+- Introduced `ConfigFor.load_config!` that raises exception when environment is missing
+- Both integrations will raise exception when environment is missing
 
 ## 0.1.2 - 2014-10-29
 

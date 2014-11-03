@@ -1,5 +1,5 @@
 require 'sinatra/base'
-require 'config_for/sinatra'
+require 'config_for/integrations/sinatra'
 
 RSpec.describe ConfigFor::Sinatra do
   it { expect(Sinatra::Application.extensions).to include(described_class) }

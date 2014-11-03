@@ -1,7 +1,6 @@
 require 'rails'
 require 'rails/application'
-require 'config_for'
-require 'config_for/rails'
+require 'config_for/integrations/rails'
 
 RSpec.describe ConfigFor::Rails do
   # TODO: remove when dropping rails 3 compatibility

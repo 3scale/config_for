@@ -115,7 +115,7 @@ If you have your own framework. You need to create your own `config_for` method.
 require 'config_for'
 module MyApp
   def self.config_for(name)
-    ConfigFor.load_config(MyApp.root.join('config'), name, MyApp.env)
+    ConfigFor.load_config!(MyApp.root.join('config'), name, MyApp.env)
   end
 end
 ```
