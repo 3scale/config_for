@@ -1,14 +1,9 @@
 require 'config_for/version'
-require 'pathname'
-
-require 'yaml'
-require 'erb'
-
-require 'active_support/hash_with_indifferent_access'
-# HashWithIndifferentAccess needs this core extension to be loaded
-require 'active_support/core_ext/hash/indifferent_access'
 
 module ConfigFor
+  InvalidConfig = Class.new(StandardError)
+  MissingEnvironment = Class.new(StandardError)
+
   if defined?(::Rails)
     require 'config_for/rails'
   end
@@ -21,6 +16,8 @@ module ConfigFor
     require 'config_for/capistrano'
   end
 
+  autoload :Config, 'config_for/config'
+
   # inspired by https://github.com/rails/rails/commit/9629dea4fb15a948ab4394590fdd946bd9dd4f91
 
   # Loads yaml file "#{{name}}.yml" from path and gets
@@ -29,30 +26,14 @@ module ConfigFor
   # @param [String] name without extension
   # @param [Symbol,String] env key to get from the config
   # @return [ActiveSupport::HashWithIndifferentAccess] config file for given env
-  # @raise [RuntimeError] when file does not exist or can't be parsed
   # @example Load config in rails
   #  ConfigFor.load_config(Rails.root.join('config'), 'redis', Rails.env)
   def self.load_config(path, name, env)
-    yaml = File.join(path, "#{name}.yml")
-
-    if File.readable?(yaml)
-      config = parse_yaml(yaml)
-      ActiveSupport::HashWithIndifferentAccess.new(config).fetch(env) { Hash.new }
-    else
-      raise "Could not load configuration. Can't read #{yaml}"
-    end
+    load_config!(path, name, env) { ConfigFor::Config.empty }
   end
 
-  # Parse and process a yaml file through ERB
-
-  # @param [Pathname, String] full path to yaml file
-  # @return [Hash]
-  # @raise [RuntimeError] when file can't be parsed
-  def self.parse_yaml(file)
-    ::YAML.load(::ERB.new(File.read(file)).result) || {}
-  rescue ::Psych::SyntaxError => e
-    raise "YAML syntax error occurred while parsing #{file}. " \
-      "Please note that YAML must be consistently indented using spaces. Tabs are not allowed. " \
-      "Error: #{e.message}"
+  def self.load_config!(path, name, env, &block)
+    config = ConfigFor::Config.new(path, name)
+    config.fetch(env, &block)
   end
 end
