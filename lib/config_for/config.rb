@@ -60,8 +60,9 @@ module ConfigFor
 
     def parse
       content = read
-      erb = ::ERB.new(content).result
-      ::YAML.load(erb, @pathname)
+      erb = ::ERB.new(content)
+      erb.filename = @pathname.to_s
+      ::YAML.load(erb.result, @pathname)
     rescue ::Psych::SyntaxError => e
       fail ConfigFor::InvalidConfigError, "YAML syntax error occurred while parsing #{content}. Error: #{e.message}"
     end
