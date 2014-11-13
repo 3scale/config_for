@@ -1,20 +1,50 @@
 require 'config_for/capistrano'
 
-RSpec.describe ConfigFor::Capistrano do
-
-end
-
-RSpec.describe ConfigFor::Capistrano::Task do
-  def invoke(task, *args)
-    rake_task(task).invoke(*args)
-  end
-
+module RspecSupport
   def rake_task(task)
     Rake::Task[task]
   end
 
+  def invoke(task, *args)
+    rake_task(task).invoke(*args)
+  end
+
+  def self.included(base)
+    base.before do
+      Rake.application = Rake::Application.new
+    end
+  end
+end
+
+RSpec.describe ConfigFor::Capistrano do
+
+end
+
+RSpec.describe ConfigFor::Capistrano::UploadFileTask do
+  include RspecSupport
+
+  let!(:task_name) { self.class.description }
+  subject!(:task) { described_class.new(task_name) }
+
+  context 'config/unicorn.rb' do
+    context 'upload_task' do
+      subject(:upload_task) { rake_task(task.path) }
+      it { expect(upload_task.prerequisites).to eq([task.tempfile.path]) }
+    end
+
+    context 'file_task' do
+      subject(:file_task) { rake_task(task.tempfile.path) }
+
+      it { expect(file_task).to be }
+      it { expect(file_task).to be_needed }
+    end
+  end
+end
+
+RSpec.describe ConfigFor::Capistrano::Task do
+  include RspecSupport
+
   before do
-    Rake.application = Rake::Application.new
     Rake::Task.define_task('deploy:check:linked_files')
   end
 
@@ -35,14 +65,9 @@ RSpec.describe ConfigFor::Capistrano::Task do
 
     let(:prerequisites) { subject.prerequisites }
 
-    context 'tempfile' do
-      subject { rake_task(task.tempfile.path) }
-      it { expect(prerequisites).to eq(['database:generate']) }
-    end
-
     context 'remote_file' do
       subject { rake_task('config/database.yml') }
-      it { expect(prerequisites).to eq([task.tempfile.path]) }
+      it { is_expected.to be }
     end
 
     context 'upload' do
