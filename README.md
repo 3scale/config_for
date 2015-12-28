@@ -6,7 +6,7 @@ It offers integrations with [Rails](#rails) and [Sinatra](#sinatra).
 
 For generating and uploading configs it [Capistrano Task](#capistrano).
 
-It is inspied by [config_for](https://github.com/rails/rails/pull/16129) in Rails 4.2. If you are using Rails 4.2, you don't need to use the Rails integration, but you might want to use the [Capistrano Task](#capistrano).
+It is inspired by [config_for](https://github.com/rails/rails/pull/16129) in Rails 4.2. If you are using Rails 4.2, you don't need to use the Rails integration, but you might want to use the [Capistrano Task](#capistrano).
 
 # How to use it?
 
