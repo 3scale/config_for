@@ -115,7 +115,7 @@ module ConfigFor
 
         @config = ConfigFor::Capistrano::UploadFileTask.new(path, roles: @roles, &method(:generate))
 
-        desc "Generate #{name} uploader" unless ::Rake.application.last_comment
+        desc "Generate #{name} uploader" unless ::Rake.application.last_description
         define
       end
 
