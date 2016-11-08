@@ -8,4 +8,5 @@ end
 
 appraise 'rails-5-0' do
   gem 'rails', '~> 5.0.0'
+  gem 'sinatra', '~> 2.0.0.beta', '< 2.1'
 end

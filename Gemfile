@@ -4,7 +4,8 @@ source 'https://rubygems.org'
 gemspec development_group: :test
 
 group :test do
-  gem 'codeclimate-test-reporter', require: false
+  gem 'codeclimate-test-reporter'
+  gem 'simplecov', require: false
   gem 'appraisal'
 end
 

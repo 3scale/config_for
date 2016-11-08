@@ -1,3 +1,3 @@
 ::Rails::Application.class_eval do
-  include ::ConfigFor::Rails
+  prepend ::ConfigFor::Rails
 end
