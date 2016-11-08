@@ -105,12 +105,12 @@ module ConfigFor
       # @param [String, Symbol] name name of this tasks and subtasks
       # @param &block gets evaluated before defining the tasks
       # @yieldparam [Task] task the task itself so you can modify it before it gets defined
-      def initialize(name, &block)
+      def initialize(name, options = {}, &block)
         @name = name
         @folder = 'config'
         @file = "#{name}.yml"
         @variable = "#{name}_yml".to_sym
-        @roles = :all
+        @roles = options.fetch(:roles, :all)
 
         yield(self) if block_given?
 
