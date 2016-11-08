@@ -29,6 +29,7 @@ module ConfigFor
       def initialize(path, options = {}, &block)
         @path = path
         @roles = options.fetch(:roles, :all)
+        @override = options.fetch(:override, false)
         @tempfile = ::Tempfile.new(File.basename(@path))
         @generator = block || ->(_file){ puts 'Did not passed file generator' }
 
@@ -41,7 +42,7 @@ module ConfigFor
 
       def define
         desc "Upload file to #{path}"
-        remote_file(path => @tempfile.path, roles: @roles)
+        remote_file(path => @tempfile.path, roles: @roles, override: @override)
         desc "Generate file #{@path} to temporary location"
 
         generate_file(@tempfile.path, &method(:generate))
@@ -71,7 +72,7 @@ module ConfigFor
           file = shared_path.join(t.name).to_s.shellescape
 
           on roles(target_roles) do
-            unless test "[ -f #{file} ]"
+            if task.delete(:override) || !test("[ -f #{file} ]")
               info "Uploading #{prerequisite_file} to #{file}"
               upload! File.open(prerequisite_file), file
             end
@@ -111,10 +112,11 @@ module ConfigFor
         @file = "#{name}.yml"
         @variable = "#{name}_yml".to_sym
         @roles = options.fetch(:roles, :all)
+        @override = options.fetch(:override, false)
 
         yield(self) if block_given?
 
-        @config = ConfigFor::Capistrano::UploadFileTask.new(path, roles: @roles, &method(:generate))
+        @config = ConfigFor::Capistrano::UploadFileTask.new(path, roles: @roles, override: @override, &method(:generate))
 
         desc "Generate #{name} uploader" unless ::Rake.application.last_description
         define
