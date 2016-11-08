@@ -17,3 +17,7 @@ before_install:
 - gem cleanup
 after_script:
 - bundle exec codeclimate-test-reporter
+matrix:
+  exclude:
+    - rvm: 2.1.10
+      gemfile: gemfiles/rails_5_0.gemfile
