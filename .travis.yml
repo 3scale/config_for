@@ -1,13 +1,23 @@
+sudo: false
 language: ruby
 gemfile:
-- gemfiles/rails_3.gemfile
-- gemfiles/rails_4.gemfile
-- gemfiles/rails_4_1.gemfile
+  - gemfiles/rails_4_1.gemfile
+  - gemfiles/rails_4_2.gemfile
+  - gemfiles/rails_5_0.gemfile
 rvm:
-- 2.1.3
-- 2.1.2
-- 2.0.0
-- 1.9.3
+- 2.3.1
+- 2.2.5
+- 2.1.10
 env:
   global:
     secure: SDYF7gJE/x/3rEwL9CxXHRLwTRBHtqtY/djQ+hg98zlvIQoMYmXcteEqiSM85x6LeFMu1pz4hqinKsSZOQ7ftZi46iWqbFPWHEqTaM7676klzH0xvMAG+I9Yo7NEUyA5OPKrWSJ1+9Smm42WggH3tqwMG5tut4zej310VFD5GMY=
+before_install:
+- gem update --system 2.6.8
+- gem install bundler --version=1.13.6
+- gem cleanup
+after_script:
+- bundle exec codeclimate-test-reporter
+matrix:
+  exclude:
+    - rvm: 2.1.10
+      gemfile: gemfiles/rails_5_0.gemfile

@@ -2,10 +2,11 @@
 
 source "https://rubygems.org"
 
-gem "rails", "~> 3.2.14"
+gem "rails", "~> 4.2.0"
 
 group :test do
-  gem "codeclimate-test-reporter", :require => false
+  gem "codeclimate-test-reporter"
+  gem "simplecov", :require => false
   gem "appraisal"
 end
 

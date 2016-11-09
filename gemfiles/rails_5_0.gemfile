@@ -2,10 +2,12 @@
 
 source "https://rubygems.org"
 
-gem "rails", "~> 4.0.0"
+gem "rails", "~> 5.0.0"
+gem "sinatra", "~> 2.0.0.beta", "< 2.1"
 
 group :test do
-  gem "codeclimate-test-reporter", :require => false
+  gem "codeclimate-test-reporter"
+  gem "simplecov", :require => false
   gem "appraisal"
 end
 

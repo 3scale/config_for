@@ -1,6 +1,7 @@
 require 'rake/tasklib'
 require 'pathname'
 require 'tempfile'
+require 'sshkit'
 require 'capistrano/dsl'
 require 'active_support/core_ext/hash/keys'
 require 'yaml'
