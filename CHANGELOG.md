@@ -3,6 +3,9 @@ All notable changes to this project will be documented in this file.
 
 ## master - unreleased
 ### Changed
+
+## 0.3.0 - 2016-11-09
+### Changed
 - Introduced `ConfigFor.load_config!` that raises exception when environment is missing
 - Both integrations will raise exception when environment is missing
 - Require Ruby >= 2.1 and test Rails >= 4.1
