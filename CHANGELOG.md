@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 ## master - unreleased
 ### Changed
 ### Added
+
+## 0.3.1 - 2016-12-09
+### Added
 - `:override` option to `ConfigFor::Capistrano::Task` to upload file every time
 
 ## 0.3.0 - 2016-11-09
@@ -22,7 +25,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - Passing a Symbol as env works
-- Loads indifferent_access core extension
+- Loads indifferent\_access core extension
 
 ## 0.1.0 - 2014-10-03
 
