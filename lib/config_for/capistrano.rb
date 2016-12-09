@@ -25,6 +25,7 @@ module ConfigFor
       # @param [Pathname, String] path the path of the file to be uploaded
       # @param [Hash] options the options
       # @option options [Array<Symbol>,Symbol] :roles (:all) the roles of servers to apply to
+      # @option options [true,false] :override (false) upload file on every run
       # @yieldparam [Tempfile] file yields the tempfile so you generate the file to be uploaded
       def initialize(path, options = {}, &block)
         @path = path
@@ -105,6 +106,7 @@ module ConfigFor
       # Generates new tasks with for uploading #name
       # @param [String, Symbol] name name of this tasks and subtasks
       # @param &block gets evaluated before defining the tasks
+      # @option options [true,false] :override (false) upload file on every run
       # @yieldparam [Task] task the task itself so you can modify it before it gets defined
       def initialize(name, options = {}, &block)
         @name = name
