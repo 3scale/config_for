@@ -67,13 +67,14 @@ module ConfigFor
 
       def remote_file(task)
         target_roles = task.delete(:roles)
+        override = task.delete(:override)
 
         UploadTask.define_task(task) do |t|
           prerequisite_file = t.prerequisites.first
           file = shared_path.join(t.name).to_s.shellescape
 
           on roles(target_roles) do
-            if task.delete(:override) || !test("[ -f #{file} ]")
+            if override || !test("[ -f #{file} ]")
               info "Uploading #{prerequisite_file} to #{file}"
               upload! File.open(prerequisite_file), file
             end
