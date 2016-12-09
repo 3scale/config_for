@@ -3,6 +3,8 @@ All notable changes to this project will be documented in this file.
 
 ## master - unreleased
 ### Changed
+### Added
+- `:override` option to `ConfigFor::Capistrano::Task` to upload file every time
 
 ## 0.3.0 - 2016-11-09
 ### Changed
