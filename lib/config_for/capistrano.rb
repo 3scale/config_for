@@ -25,10 +25,12 @@ module ConfigFor
       # @param [Pathname, String] path the path of the file to be uploaded
       # @param [Hash] options the options
       # @option options [Array<Symbol>,Symbol] :roles (:all) the roles of servers to apply to
+      # @option options [true,false] :override (false) upload file on every run
       # @yieldparam [Tempfile] file yields the tempfile so you generate the file to be uploaded
       def initialize(path, options = {}, &block)
         @path = path
         @roles = options.fetch(:roles, :all)
+        @override = options.fetch(:override, false)
         @tempfile = ::Tempfile.new(File.basename(@path))
         @generator = block || ->(_file){ puts 'Did not passed file generator' }
 
@@ -41,7 +43,7 @@ module ConfigFor
 
       def define
         desc "Upload file to #{path}"
-        remote_file(path => @tempfile.path, roles: @roles)
+        remote_file(path => @tempfile.path, roles: @roles, override: @override)
         desc "Generate file #{@path} to temporary location"
 
         generate_file(@tempfile.path, &method(:generate))
@@ -65,13 +67,14 @@ module ConfigFor
 
       def remote_file(task)
         target_roles = task.delete(:roles)
+        override = task.delete(:override)
 
         UploadTask.define_task(task) do |t|
           prerequisite_file = t.prerequisites.first
           file = shared_path.join(t.name).to_s.shellescape
 
           on roles(target_roles) do
-            unless test "[ -f #{file} ]"
+            if override || !test("[ -f #{file} ]")
               info "Uploading #{prerequisite_file} to #{file}"
               upload! File.open(prerequisite_file), file
             end
@@ -104,17 +107,19 @@ module ConfigFor
       # Generates new tasks with for uploading #name
       # @param [String, Symbol] name name of this tasks and subtasks
       # @param &block gets evaluated before defining the tasks
+      # @option options [true,false] :override (false) upload file on every run
       # @yieldparam [Task] task the task itself so you can modify it before it gets defined
-      def initialize(name, &block)
+      def initialize(name, options = {}, &block)
         @name = name
         @folder = 'config'
         @file = "#{name}.yml"
         @variable = "#{name}_yml".to_sym
-        @roles = :all
+        @roles = options.fetch(:roles, :all)
+        @override = options.fetch(:override, false)
 
         yield(self) if block_given?
 
-        @config = ConfigFor::Capistrano::UploadFileTask.new(path, roles: @roles, &method(:generate))
+        @config = ConfigFor::Capistrano::UploadFileTask.new(path, roles: @roles, override: @override, &method(:generate))
 
         desc "Generate #{name} uploader" unless ::Rake.application.last_description
         define
